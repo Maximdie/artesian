@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Артезианс-плюс — сайт компании по бурению скважин
 
-## Getting Started
+Next.js 15 · App Router · TypeScript · Tailwind CSS v4 · SSG + 1 API-route
 
-First, run the development server:
+## Локальный запуск
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Переменные окружения
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Скопируйте `.env.local.example` в `.env.local` и заполните:
 
-## Learn More
+```bash
+cp .env.local.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+| Переменная | Описание |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | Токен бота от @BotFather |
+| `TELEGRAM_CHAT_ID` | ID чата/группы для получения заявок |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Как получить токен и chat_id
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. В Telegram откройте @BotFather → `/newbot` → следуйте инструкциям → скопируйте токен
+2. Напишите своему боту любое сообщение
+3. Откройте `https://api.telegram.org/bot<ТОКЕН>/getUpdates`
+4. Найдите `"chat":{"id": ...}` — это и есть `TELEGRAM_CHAT_ID`
 
-## Deploy on Vercel
+Если переменные не заданы, форма покажет номера телефонов вместо ошибки.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Обновление цен
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Цены хранятся в [`lib/prices.ts`](lib/prices.ts). Для изменения цены «под ключ» замените `null` на число:
+
+```ts
+export const TURNKEY_PRICE: number | null = 250_000; // ← вставить реальную цену
+```
+
+## Сборка и проверка
+
+```bash
+npm run build
+npm run start
+```
+
+## Деплой на Vercel
+
+1. Зайдите на [vercel.com](https://vercel.com) → **Add New Project**
+2. Импортируйте репозиторий `Maximdie/artesian`
+3. В разделе **Environment Variables** добавьте `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID`
+4. Нажмите **Deploy**
+
+### Привязка домена artesian-plus.ru
+
+После деплоя: **Vercel → Settings → Domains → artesian-plus.ru**
+
+У регистратора домена добавьте DNS-записи:
+
+| Тип | Имя | Значение |
+|---|---|---|
+| A | @ | 76.76.21.21 |
+| CNAME | www | cname.vercel-dns.com |
+
+## Структура проекта
+
+```
+app/
+  page.tsx           — Главная
+  burenie/           — Бурение скважин
+  obustroystvo/      — Обустройство
+  septiki/           — Септики
+  tseny/             — Цены
+  o-kompanii/        — О компании
+  kontakty/          — Контакты
+  privacy/           — Политика конфиденциальности
+  api/lead/          — POST-роут для заявок → Telegram
+  sitemap.ts
+  robots.ts
+
+components/          — Все переиспользуемые компоненты
+lib/
+  prices.ts          — Цены (единственный файл для редактирования цен)
+  content.ts         — Все тексты, контакты, города
+```
