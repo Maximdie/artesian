@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { company } from "@/lib/content";
 import { ContactButtons } from "@/components/ContactButtons";
@@ -19,98 +19,134 @@ const navLinks = [
 export function Header() {
   const [open, setOpen] = useState(false);
 
+  // lock body scroll while drawer is open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
-          {/* Logo */}
-          <Link href="/" className="shrink-0" aria-label="Артезианс-плюс — главная">
-            <Logo size="sm" className="h-8 w-auto" />
-          </Link>
+    <>
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-4">
 
-          {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-5">
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-sm font-medium text-[#1a2332] hover:text-[#0b4f8a] transition-colors"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
+            {/* Logo */}
+            <Link href="/" className="shrink-0" aria-label="Артезианс-плюс — главная">
+              <Logo size="sm" className="h-8 w-auto" />
+            </Link>
 
-          {/* Desktop: phone + messenger icons */}
-          <div className="hidden md:flex items-center gap-3 shrink-0">
-            <a
-              href={company.phones[0].href}
-              className="flex items-center gap-2 text-[#0b4f8a] font-bold text-sm hover:text-[#083a66] transition-colors"
-            >
-              <Phone className="w-4 h-4" />
-              {company.phones[0].number}
-            </a>
-            {/* Messenger icon-only buttons */}
-            <div className="flex gap-1.5">
-              {company.messengers.map((m) => (
-                <a
-                  key={m.id}
-                  href={m.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={m.label}
-                  title={m.label}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-white transition-opacity hover:opacity-85 active:scale-95"
-                  style={{ backgroundColor: m.color }}
+            {/* Desktop nav */}
+            <nav className="hidden lg:flex items-center gap-5">
+              {navLinks.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="text-sm font-medium text-text-main hover:text-primary transition-colors"
                 >
-                  <MessengerIcon id={m.id} />
-                </a>
+                  {l.label}
+                </Link>
               ))}
-            </div>
-          </div>
+            </nav>
 
-          {/* Burger */}
+            {/* Desktop: phone + messenger icons */}
+            <div className="hidden md:flex items-center gap-3 shrink-0">
+              <a
+                href={company.phones[0].href}
+                className="flex items-center gap-2 text-primary font-bold text-sm hover:text-primary-dark transition-colors"
+              >
+                <Phone className="w-4 h-4" />
+                {company.phones[0].number}
+              </a>
+              <div className="flex gap-1.5">
+                {company.messengers.map((m) => (
+                  <a
+                    key={m.id}
+                    href={m.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={m.label}
+                    title={m.label}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white transition-opacity hover:opacity-85 active:scale-95"
+                    style={{ backgroundColor: m.color }}
+                  >
+                    <MessengerIcon id={m.id} />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Burger — visible below lg */}
+            <button
+              onClick={() => setOpen(true)}
+              aria-label="Открыть меню"
+              className="lg:hidden p-2 rounded-md text-text-main hover:bg-gray-100 transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* ── Mobile drawer ── */}
+
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 z-50 bg-black/45 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Panel */}
+      <div
+        className={`fixed top-0 right-0 h-full w-72 max-w-[82vw] z-50 bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-in-out lg:hidden ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-5 h-16 border-b border-gray-100 shrink-0">
+          <Logo size="sm" className="h-7 w-auto" />
           <button
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Меню"
-            className="lg:hidden p-2 rounded-md text-[#1a2332] hover:bg-gray-100 transition-colors"
+            onClick={() => setOpen(false)}
+            aria-label="Закрыть меню"
+            className="p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors"
           >
-            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <X className="w-5 h-5" />
           </button>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      {open && (
-        <div className="lg:hidden bg-white border-t border-gray-100 px-4 pb-5">
-          <nav className="flex flex-col gap-1 pt-2 mb-4">
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="py-2 px-3 rounded-md text-sm font-medium text-[#1a2332] hover:bg-[#f0f7ff] hover:text-[#0b4f8a] transition-colors"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-          {/* Mobile: phone + all messenger buttons */}
-          <div className="border-t border-gray-100 pt-4 flex flex-col gap-3">
-            <a
-              href={company.phones[0].href}
-              className="flex items-center gap-2 text-[#0b4f8a] font-bold px-3"
+        {/* Nav links */}
+        <nav className="flex flex-col px-3 py-2 flex-1 overflow-y-auto">
+          {navLinks.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="py-3 px-4 rounded-xl text-[15px] font-medium text-text-main hover:bg-surface hover:text-primary transition-colors"
             >
-              <Phone className="w-4 h-4" />
-              {company.phones[0].number}
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Phone + messengers */}
+        <div className="px-5 pb-7 pt-4 border-t border-gray-100 flex flex-col gap-3 shrink-0">
+          {company.phones.map((p) => (
+            <a
+              key={p.href}
+              href={p.href}
+              className="flex items-center gap-2 text-primary font-bold text-base"
+            >
+              <Phone className="w-4 h-4 shrink-0" />
+              {p.number}
             </a>
-            <div className="px-3">
-              <ContactButtons size="sm" />
-            </div>
-          </div>
+          ))}
+          <ContactButtons size="sm" className="mt-1" />
         </div>
-      )}
-    </header>
+      </div>
+    </>
   );
 }
 
