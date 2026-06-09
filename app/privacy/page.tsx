@@ -70,8 +70,7 @@ export default function PrivacyPage() {
             <li>Данные не передаются третьим лицам без согласия пользователя, за исключением
             случаев, предусмотренных законодательством РФ.</li>
             <li>Данные хранятся до достижения целей обработки или до отзыва согласия.</li>
-            <li>Пользователь вправе в любой момент отозвать согласие, направив запрос на email
-            {" "}<strong className="text-text-main">{company.email}</strong>.</li>
+            <li>Пользователь вправе в любой момент отозвать согласие, обратившись по телефону <a href={company.phones[0].href} className="text-primary underline">{company.phones[0].number}</a>.</li>
           </ul>
         </section>
 
@@ -92,7 +91,6 @@ export default function PrivacyPage() {
             По вопросам, связанным с обработкой персональных данных, обращайтесь:
           </p>
           <ul className="list-none space-y-1">
-            <li>Email: <a href={`mailto:${company.email}`} className="text-primary underline">{company.email}</a></li>
             <li>Телефон: <a href={company.phones[0].href} className="text-primary underline">{company.phones[0].number}</a></li>
           </ul>
         </section>

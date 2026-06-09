@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Phone, MapPin, Shield, Clock, Truck, Tractor } from "lucide-react";
-import { ImagePlaceholder } from "@/components/ImagePlaceholder";
+import { Gallery } from "@/components/Gallery";
 import { LocalBusinessJsonLd } from "@/components/LocalBusinessJsonLd";
 import { ContactButtons } from "@/components/ContactButtons";
 import { company, cities } from "@/lib/content";
+import { galleryPhotos } from "@/lib/photos";
 
 export const metadata: Metadata = {
   title: "О компании Артезианс-плюс — бурение скважин в Бронницах",
@@ -59,7 +61,15 @@ export default function OKompaniiPage() {
                 малогабаритную буровую установку.
               </p>
             </div>
-            <ImagePlaceholder label="Фото: команда и техника" aspectRatio="video" />
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-md">
+              <Image
+                src="/photo_2026-06-09_14-08-24.jpg"
+                alt="Буровые установки Артезианс-плюс на объекте"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -88,7 +98,9 @@ export default function OKompaniiPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-8">Наша техника</h2>
           <div className="grid sm:grid-cols-3 gap-6">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <ImagePlaceholder label="Фото: буровая установка на ЗИЛе" aspectRatio="video" />
+              <div className="relative aspect-video">
+                <Image src="/photo_2026-06-09_14-08-25.jpg" alt="Буровая установка на базе ЗИЛ" fill className="object-cover" sizes="(max-width: 640px) 100vw, 33vw" />
+              </div>
               <div className="p-5">
                 <h3 className="font-bold text-text-main mb-1">Буровая на базе ЗИЛ</h3>
                 <p className="text-sm text-muted">
@@ -97,7 +109,9 @@ export default function OKompaniiPage() {
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <ImagePlaceholder label="Фото: малогабаритная буровая установка" aspectRatio="video" />
+              <div className="relative aspect-video">
+                <Image src="/photo_2026-06-09_17-04-22.jpg" alt="Малогабаритная буровая установка" fill className="object-cover" sizes="(max-width: 640px) 100vw, 33vw" />
+              </div>
               <div className="p-5">
                 <h3 className="font-bold text-text-main mb-1">Малогабаритная установка</h3>
                 <p className="text-sm text-muted">
@@ -106,7 +120,9 @@ export default function OKompaniiPage() {
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <ImagePlaceholder label="Фото: трактор" aspectRatio="video" />
+              <div className="relative aspect-video">
+                <Image src="/photo_2026-06-09_17-04-33.jpg" alt="Работы на объекте бурения" fill className="object-cover" sizes="(max-width: 640px) 100vw, 33vw" />
+              </div>
               <div className="p-5">
                 <h3 className="font-bold text-text-main mb-1">Собственный трактор</h3>
                 <p className="text-sm text-muted">
@@ -115,6 +131,15 @@ export default function OKompaniiPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-12 sm:py-16 bg-surface">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2 text-center">Наши работы</h2>
+          <p className="text-muted text-center mb-8">Фотографии с реальных объектов</p>
+          <Gallery photos={galleryPhotos} />
         </div>
       </section>
 

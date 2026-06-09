@@ -11,7 +11,6 @@ export function LocalBusinessJsonLd({ pageUrl = "/" }: Props) {
     name: company.name,
     url: `https://artesian-plus.ru${pageUrl}`,
     telephone: company.phones.map((p) => p.href.replace("tel:", "")),
-    email: company.email,
     areaServed: {
       "@type": "GeoCircle",
       geoMidpoint: {

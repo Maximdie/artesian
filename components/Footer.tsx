@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import { company, cities } from "@/lib/content";
 import { ContactButtons } from "@/components/ContactButtons";
 
@@ -58,15 +58,6 @@ export function Footer() {
                   </a>
                 </li>
               ))}
-              <li>
-                <a
-                  href={`mailto:${company.email}`}
-                  className="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
-                >
-                  <Mail className="w-4 h-4 shrink-0" />
-                  {company.email}
-                </a>
-              </li>
             </ul>
           </div>
 

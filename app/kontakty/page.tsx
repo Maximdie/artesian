@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import { LeadForm } from "@/components/LeadForm";
 import { ServiceAreaMap } from "@/components/ServiceAreaMap";
 import { ContactButtons } from "@/components/ContactButtons";
@@ -9,7 +9,7 @@ import { company, cities } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Контакты — Артезианс-плюс, Бронницы",
   description:
-    "Телефоны, email, Telegram и форма заявки Артезианс-плюс. Бурение скважин в Бронницах и Подмосковье в радиусе 70 км.",
+    "Телефоны, Telegram и форма заявки Артезианс-плюс. Бурение скважин в Бронницах и Подмосковье в радиусе 70 км.",
   alternates: { canonical: "https://artesian-plus.ru/kontakty" },
 };
 
@@ -52,20 +52,6 @@ export default function KontaktyPage() {
                     </a>
                   ))}
                 </div>
-              </div>
-
-              {/* Email */}
-              <div className="mb-6">
-                <p className="text-sm font-semibold text-muted uppercase tracking-wide mb-3">
-                  Email
-                </p>
-                <a
-                  href={`mailto:${company.email}`}
-                  className="inline-flex items-center gap-3 text-primary font-medium hover:underline"
-                >
-                  <Mail className="w-5 h-5 shrink-0" />
-                  {company.email}
-                </a>
               </div>
 
               {/* Messengers */}

@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, CheckCircle2, XCircle } from "lucide-react";
 import { Calculator } from "@/components/Calculator";
 import { LeadForm } from "@/components/LeadForm";
 import { FAQ } from "@/components/FAQ";
-import { ImagePlaceholder } from "@/components/ImagePlaceholder";
+import { Gallery } from "@/components/Gallery";
 import { LocalBusinessJsonLd } from "@/components/LocalBusinessJsonLd";
 import { ContactButtons } from "@/components/ContactButtons";
 import { company, faqDrilling } from "@/lib/content";
 import { prices } from "@/lib/prices";
+import { galleryPhotos } from "@/lib/photos";
 
 export const metadata: Metadata = {
   title: "Бурение артезианских скважин в Бронницах и Раменском районе",
@@ -75,7 +77,15 @@ export default function BureniePage() {
                 для питья.
               </p>
             </div>
-            <ImagePlaceholder label="Схема артезианской скважины" aspectRatio="portrait" />
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-md">
+              <Image
+                src="/photo_2026-06-09_14-08-26.jpg"
+                alt="Бурение артезианской скважины на объекте"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -228,6 +238,15 @@ export default function BureniePage() {
             </div>
             <Calculator />
           </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-12 sm:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Наши работы</h2>
+          <p className="text-muted mb-8">Фотографии с реальных объектов бурения</p>
+          <Gallery photos={galleryPhotos} />
         </div>
       </section>
 

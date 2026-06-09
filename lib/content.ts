@@ -7,7 +7,6 @@ export const company = {
     { number: "8-910-000-65-71", href: "tel:+79100006571" },
     { number: "8-906-050-65-71", href: "tel:+79060506571" },
   ],
-  email: "lexa.ryjenckov@yandex.ru",
   baseCity: "Бронницы",
   serviceRadius: 70,
   workZone: "г. Бронницы и радиус 70 км (юго-восток Московской области)",
