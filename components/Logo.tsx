@@ -6,92 +6,96 @@ interface LogoProps {
 }
 
 export function Logo({ className = "", variant = "default", size = "md" }: LogoProps) {
-  const textColor = variant === "white" ? "#ffffff" : "#0B4F8A";
-  const subColor = variant === "white" ? "rgba(255,255,255,0.75)" : "#2E90D1";
-  const iconBg = variant === "white" ? "rgba(255,255,255,0.2)" : "#0B4F8A";
-  const iconFill = "#ffffff";
+  const isWhite = variant === "white";
 
-  const sizes = {
-    sm: { icon: 32, titleSize: 14, subSize: 11, gap: 8, totalH: 32, textW: 100 },
-    md: { icon: 40, titleSize: 17, subSize: 13, gap: 10, totalH: 40, textW: 125 },
-    lg: { icon: 52, titleSize: 22, subSize: 16, gap: 12, totalH: 52, textW: 160 },
-  };
-  const s = sizes[size];
-  const viewW = s.icon + s.gap + s.textW;
+  const dropFill  = isWhite ? "rgba(255,255,255,0.92)" : "#0B4F8A";
+  const waveStroke = isWhite ? "#0B4F8A" : "#ffffff";
+  const textFill  = isWhite ? "#ffffff" : "#0B4F8A";
+  const plusFill  = isWhite ? "rgba(255,255,255,0.6)" : "#2E90D1";
+
+  const S = {
+    sm: { h: 32, iw: 24, gap: 8, fs: 15.5, viewW: 132 },
+    md: { h: 40, iw: 30, gap: 10, fs: 19.5, viewW: 166 },
+    lg: { h: 52, iw: 38, gap: 12, fs: 25,   viewW: 214 },
+  }[size];
+
+  // ---- droplet geometry (fits within iw × h) ----
+  const cx  = S.iw / 2;
+  const top = S.h * 0.06;
+  const r   = S.h * 0.295; // radius of bottom circle
+  const bcy = S.h - r;     // bottom circle centre Y
+
+  // droplet path: point at top → left curve → bottom semicircle → right curve → close
+  const drop = [
+    `M ${cx},${top}`,
+    `C ${cx},${top} ${cx - r},${bcy - r * 0.82} ${cx - r},${bcy}`,
+    `A ${r},${r} 0 0,0 ${cx + r},${bcy}`,
+    `C ${cx + r},${bcy - r * 0.82} ${cx},${top} Z`,
+  ].join(" ");
+
+  // wave inside droplet (at bottom ⅓ area)
+  const wy  = bcy + r * 0.05;
+  const wdx = r * 0.38;
+  const wave = `M ${cx - wdx * 2},${wy} Q ${cx - wdx},${wy - r * 0.22} ${cx},${wy} Q ${cx + wdx},${wy + r * 0.22} ${cx + wdx * 2},${wy}`;
+
+  const textX = S.iw + S.gap;
+  const textY = S.h * 0.695;
 
   return (
     <svg
       className={className}
-      viewBox={`0 0 ${viewW} ${s.totalH}`}
+      viewBox={`0 0 ${S.viewW} ${S.h}`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="Артезианс-плюс"
       role="img"
     >
-      {/* Icon background circle */}
-      <circle cx={s.icon / 2} cy={s.totalH / 2} r={s.icon / 2} fill={iconBg} />
-
-      {/* Droplet inside circle */}
-      {(() => {
-        const cx = s.icon / 2;
-        const cy = s.totalH / 2;
-        const dw = s.icon * 0.42;
-        const dh = s.icon * 0.56;
-        const dx = cx;
-        const dy = cy - dh * 0.18;
-        const top = dy - dh / 2;
-        const bot = dy + dh / 2;
-        const left = dx - dw / 2;
-        const right = dx + dw / 2;
-        return (
-          <path
-            d={`M ${dx},${top} C ${dx},${top} ${left},${top + dh * 0.38} ${left},${bot - dw / 2} A ${dw / 2},${dw / 2} 0 0,0 ${right},${bot - dw / 2} C ${right},${top + dh * 0.38} ${dx},${top} ${dx},${top} Z`}
-            fill={iconFill}
-            opacity="0.9"
-          />
-        );
-      })()}
+      {/* Droplet */}
+      <path d={drop} fill={dropFill} />
 
       {/* Wave inside droplet */}
-      {(() => {
-        const cx = s.icon / 2;
-        const cy = s.totalH / 2 + s.icon * 0.05;
-        const hw = s.icon * 0.16;
-        const vy = s.icon * 0.07;
-        return (
-          <path
-            d={`M ${cx - hw * 2},${cy} Q ${cx - hw},${cy - vy} ${cx},${cy} Q ${cx + hw},${cy - vy} ${cx + hw * 2},${cy}`}
-            stroke={iconBg === "#0B4F8A" ? "#0B4F8A" : "rgba(11,79,138,0.6)"}
-            strokeWidth={s.icon * 0.05}
-            fill="none"
-            strokeLinecap="round"
-          />
-        );
-      })()}
+      <path
+        d={wave}
+        stroke={waveStroke}
+        strokeWidth={S.h * 0.048}
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.7"
+      />
 
-      {/* Company name */}
+      {/* "Артезианс" + styled "+" */}
       <text
-        x={s.icon + s.gap}
-        y={s.totalH * 0.47}
-        fontFamily="system-ui, -apple-system, sans-serif"
+        x={textX}
+        y={textY}
+        fontFamily="system-ui,-apple-system,sans-serif"
         fontWeight="700"
-        fontSize={s.titleSize}
-        fill={textColor}
-        dominantBaseline="auto"
+        fontSize={S.fs}
+        fill={textFill}
       >
         Артезианс
       </text>
-      <text
-        x={s.icon + s.gap}
-        y={s.totalH * 0.92}
-        fontFamily="system-ui, -apple-system, sans-serif"
-        fontWeight="500"
-        fontSize={s.subSize}
-        fill={subColor}
-        dominantBaseline="auto"
-      >
-        — плюс
-      </text>
+
+      {/* Plus: small circle + cross */}
+      {(() => {
+        // Estimate text width: ~8.7px per char at 15.5px, scales proportionally
+        const charW = S.fs * 0.565;
+        const textEnd = textX + 9 * charW; // "Артезианс" = 9 chars
+        const pr  = S.h * 0.155; // badge radius
+        const pcx = textEnd + pr + S.h * 0.04;
+        const pcy = S.h * 0.44;
+        const arm = pr * 0.55;
+        const t   = pr * 0.28;
+        const bgFill = isWhite ? "rgba(255,255,255,0.2)" : "#2E90D1";
+        const crossFill = isWhite ? "#ffffff" : "#ffffff";
+        return (
+          <g transform={`translate(${pcx},${pcy})`}>
+            <circle r={pr} fill={bgFill} />
+            {/* cross */}
+            <rect x={-t/2} y={-arm} width={t} height={arm*2} rx={t/2} fill={crossFill} />
+            <rect x={-arm} y={-t/2} width={arm*2} height={t} rx={t/2} fill={crossFill} />
+          </g>
+        );
+      })()}
     </svg>
   );
 }
