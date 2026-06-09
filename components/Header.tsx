@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { company } from "@/lib/content";
 import { ContactButtons } from "@/components/ContactButtons";
+import { Logo } from "@/components/Logo";
 
 const navLinks = [
   { href: "/burenie", label: "Бурение" },
@@ -23,11 +24,8 @@ export function Header() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
-          <Link
-            href="/"
-            className="font-bold text-lg text-[#0b4f8a] shrink-0 hover:text-[#083a66] transition-colors"
-          >
-            Артезианс-плюс
+          <Link href="/" className="shrink-0" aria-label="Артезианс-плюс — главная">
+            <Logo size="sm" className="h-8 w-auto" />
           </Link>
 
           {/* Desktop nav */}
@@ -128,8 +126,9 @@ function MessengerIcon({ id }: { id: string }) {
     </svg>
   );
   return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm.75 17.25h-1.5V9.81l-2.47 2.47-1.06-1.06 3.78-3.78h1.25v9.81zm3.47-4.28-1.06-1.06 1.47-1.47V8.25h1.5v2.69l-1.91 1.98z" />
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect width="24" height="24" rx="5" fill="#0077FF"/>
+      <text x="12" y="16.5" textAnchor="middle" fontFamily="system-ui,sans-serif" fontWeight="900" fontSize="9" fill="white" letterSpacing="-0.5">MAX</text>
     </svg>
   );
 }

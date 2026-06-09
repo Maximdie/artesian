@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   },
   description:
     "Артезианские скважины под ключ за 1 день. Зона работ: Бронницы, Раменское, Жуковский, Коломна и весь юго-восток Подмосковья в радиусе 70 км. Гарантия.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/favicon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "ru_RU",
@@ -27,7 +33,7 @@ export const metadata: Metadata = {
     title: "Бурение артезианских скважин в Бронницах — за 1 день",
     description:
       "Артезианские скважины под ключ за 1 день. Бронницы и 70 км. Сертифицированные трубы. Гарантия.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Артезианс-плюс" }],
+    images: [{ url: "/og-image.svg", width: 1200, height: 630, alt: "Артезианс-плюс" }],
   },
   robots: { index: true, follow: true },
 };

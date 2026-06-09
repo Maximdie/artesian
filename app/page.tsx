@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, ChevronRight, Clock, Truck, Shield, Wrench, Tractor, Building2 } from "lucide-react";
 import { Calculator } from "@/components/Calculator";
 import { LeadForm } from "@/components/LeadForm";
 import { FAQ } from "@/components/FAQ";
-import { ImagePlaceholder } from "@/components/ImagePlaceholder";
+import { Gallery } from "@/components/Gallery";
 import { LocalBusinessJsonLd } from "@/components/LocalBusinessJsonLd";
 import { ServiceAreaMap } from "@/components/ServiceAreaMap";
 import { ContactButtons } from "@/components/ContactButtons";
 import { company, benefits, howWeWork, services, faqMain } from "@/lib/content";
 import { prices } from "@/lib/prices";
+import { galleryPhotos } from "@/lib/photos";
 
 export const metadata: Metadata = {
   title: "Бурение артезианских скважин в Бронницах и Раменском районе за 1 день",
@@ -28,37 +30,73 @@ export default function HomePage() {
       <LocalBusinessJsonLd pageUrl="/" />
 
       {/* Hero */}
-      <section className="bg-linear-to-br from-primary to-primary-light text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-          <div className="grid lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4">
-                Артезианские скважины под ключ за 1 день
-              </h1>
-              <p className="text-lg text-white/80 mb-8">
-                Бурим в {company.baseCity} и радиусе {company.serviceRadius} км (юго-восток Подмосковья).
-                Сертифицированные трубы, гарантия, своя техника.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href="#calculator"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-[#0b4f8a] font-bold px-6 py-3 rounded-lg hover:bg-white/90 transition-colors"
-                >
-                  Рассчитать стоимость
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-                <a
-                  href={company.phones[0].href}
-                  className="inline-flex items-center justify-center gap-2 border-2 border-white text-white font-semibold px-6 py-3 rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  <Phone className="w-4 h-4" />
-                  {company.phones[0].number}
-                </a>
+      <section className="relative min-h-[88vh] flex items-center overflow-hidden">
+        {/* Background photo */}
+        <Image
+          src="/photo_2026-06-09_14-08-24.jpg"
+          alt="Буровые установки Артезианс-плюс на объекте"
+          fill
+          className="object-cover object-center"
+          priority
+          quality={85}
+        />
+        {/* Gradient overlay — dark on left where text is */}
+        <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/55 to-black/25" />
+        {/* Bottom vignette for stats readability */}
+        <div className="absolute bottom-0 inset-x-0 h-40 bg-linear-to-t from-black/60 to-transparent" />
+
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 w-full">
+          {/* Trust badge */}
+          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-4 py-1.5 text-white text-sm font-medium mb-6">
+            <span className="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse" />
+            Работаем с 2018 года · Более 500 скважин
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] max-w-2xl mb-5 drop-shadow-md">
+            Артезианские скважины<br />
+            <span className="text-accent">под ключ</span> — за 1 день
+          </h1>
+
+          {/* Subline */}
+          <p className="text-lg sm:text-xl text-white/80 max-w-xl mb-9 leading-relaxed">
+            {company.baseCity}, Раменское и весь юго-восток Подмосковья.
+            Своя техника, сертифицированные трубы, гарантия.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-14">
+            <Link
+              href="#calculator"
+              className="inline-flex items-center justify-center gap-2 bg-accent text-white font-bold px-8 py-4 rounded-xl hover:bg-accent/90 transition-all shadow-lg text-base"
+            >
+              Рассчитать стоимость
+              <ChevronRight className="w-5 h-5" />
+            </Link>
+            <a
+              href={company.phones[0].href}
+              className="inline-flex items-center justify-center gap-2 border-2 border-white/60 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 hover:border-white transition-all text-base backdrop-blur-sm"
+            >
+              <Phone className="w-5 h-5" />
+              {company.phones[0].number}
+            </a>
+          </div>
+
+          {/* Stats row */}
+          <div className="flex flex-wrap gap-8 sm:gap-12">
+            {(
+              [
+                { value: "500+", label: "скважин пробурено" },
+                { value: "1 день", label: "от звонка до воды" },
+                { value: "70 км", label: "радиус работ" },
+                { value: "5 лет", label: "гарантия" },
+              ] as const
+            ).map((s) => (
+              <div key={s.label} className="text-white">
+                <div className="text-2xl sm:text-3xl font-bold">{s.value}</div>
+                <div className="text-white/60 text-sm mt-0.5">{s.label}</div>
               </div>
-            </div>
-            <div className="hidden lg:block">
-              <ImagePlaceholder label="Фото: буровая установка на объекте" aspectRatio="video" />
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -177,6 +215,17 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-12 sm:py-16 bg-surface">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2 text-center">
+            Наши работы
+          </h2>
+          <p className="text-muted text-center mb-8">Фотографии с реальных объектов</p>
+          <Gallery photos={galleryPhotos} />
         </div>
       </section>
 

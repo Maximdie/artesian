@@ -22,8 +22,9 @@ function TelegramIcon() {
 
 function MaxIcon() {
   return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm.75 17.25h-1.5V9.81l-2.47 2.47-1.06-1.06 3.78-3.78h1.25v9.81zm3.47-4.28-1.06-1.06 1.47-1.47V8.25h1.5v2.69l-1.91 1.98z" />
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect width="24" height="24" rx="6" fill="#0077FF"/>
+      <text x="12" y="16.8" textAnchor="middle" fontFamily="system-ui,sans-serif" fontWeight="900" fontSize="9.5" fill="white" letterSpacing="-0.5">MAX</text>
     </svg>
   );
 }
