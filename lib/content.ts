@@ -26,13 +26,6 @@ export const company = {
       color: "#229ED9",
       colorHover: "#1a8abf",
     },
-    {
-      id: "max",
-      label: "MAX",
-      href: "https://vk.me/+79100006571",
-      color: "#0077FF",
-      colorHover: "#005fcc",
-    },
   ],
 } as const;
 

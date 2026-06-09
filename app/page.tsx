@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { Phone, ChevronRight, Clock, Truck, Shield, Wrench, Tractor, Building2 } from "lucide-react";
 import { Calculator } from "@/components/Calculator";
 import { LeadForm } from "@/components/LeadForm";
 import { FAQ } from "@/components/FAQ";
 import { Gallery } from "@/components/Gallery";
+import { HeroForm } from "@/components/HeroForm";
 import { LocalBusinessJsonLd } from "@/components/LocalBusinessJsonLd";
 import { ServiceAreaMap } from "@/components/ServiceAreaMap";
 import { ContactButtons } from "@/components/ContactButtons";
@@ -30,73 +30,91 @@ export default function HomePage() {
       <LocalBusinessJsonLd pageUrl="/" />
 
       {/* Hero */}
-      <section className="relative min-h-[88vh] flex items-center overflow-hidden">
-        {/* Background photo */}
-        <Image
-          src="/photo_2026-06-09_14-08-24.jpg"
-          alt="Буровые установки Артезианс-плюс на объекте"
-          fill
-          className="object-cover object-center"
-          priority
-          quality={85}
-        />
-        {/* Gradient overlay — dark on left where text is */}
-        <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/55 to-black/25" />
-        {/* Bottom vignette for stats readability */}
-        <div className="absolute bottom-0 inset-x-0 h-40 bg-linear-to-t from-black/60 to-transparent" />
+      <section className="relative overflow-hidden bg-linear-to-br from-[#031b35] via-[#0b4f8a] to-[#1a6ab5] text-white">
+        {/* Decorative layer */}
+        <div className="absolute inset-0 pointer-events-none select-none" aria-hidden="true">
+          {/* Dot grid */}
+          <div
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+          {/* Glow blobs */}
+          <div className="absolute -top-32 -right-32 w-[480px] h-[480px] rounded-full bg-accent/25 blur-[90px]" />
+          <div className="absolute bottom-0 -left-20 w-72 h-72 rounded-full bg-white/8 blur-[60px]" />
+          {/* Large droplet outline */}
+          <svg className="absolute -right-16 top-0 h-full w-auto opacity-[0.06]" viewBox="0 0 300 500" fill="none" aria-hidden="true">
+            <path d="M150 10 C150 10 30 130 30 280 A120 120 0 0 0 270 280 C270 130 150 10 150 10Z" fill="white" />
+          </svg>
+          {/* Bottom wave */}
+          <svg className="absolute bottom-0 left-0 right-0 w-full" viewBox="0 0 1440 56" preserveAspectRatio="none" fill="none" aria-hidden="true">
+            <path d="M0,28 C240,56 480,0 720,28 C960,56 1200,14 1440,28 L1440,56 L0,56 Z" fill="white" fillOpacity="0.06" />
+          </svg>
+        </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 w-full">
-          {/* Trust badge */}
-          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-4 py-1.5 text-white text-sm font-medium mb-6">
-            <span className="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse" />
-            Работаем с 2018 года · Более 500 скважин
-          </div>
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+          <div className="grid lg:grid-cols-[1fr_420px] gap-10 xl:gap-16 items-center">
 
-          {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] max-w-2xl mb-5 drop-shadow-md">
-            Артезианские скважины<br />
-            <span className="text-accent">под ключ</span> — за 1 день
-          </h1>
-
-          {/* Subline */}
-          <p className="text-lg sm:text-xl text-white/80 max-w-xl mb-9 leading-relaxed">
-            {company.baseCity}, Раменское и весь юго-восток Подмосковья.
-            Своя техника, сертифицированные трубы, гарантия.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-14">
-            <Link
-              href="#calculator"
-              className="inline-flex items-center justify-center gap-2 bg-accent text-white font-bold px-8 py-4 rounded-xl hover:bg-accent/90 transition-all shadow-lg text-base"
-            >
-              Рассчитать стоимость
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-            <a
-              href={company.phones[0].href}
-              className="inline-flex items-center justify-center gap-2 border-2 border-white/60 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 hover:border-white transition-all text-base backdrop-blur-sm"
-            >
-              <Phone className="w-5 h-5" />
-              {company.phones[0].number}
-            </a>
-          </div>
-
-          {/* Stats row */}
-          <div className="flex flex-wrap gap-8 sm:gap-12">
-            {(
-              [
-                { value: "500+", label: "скважин пробурено" },
-                { value: "1 день", label: "от звонка до воды" },
-                { value: "70 км", label: "радиус работ" },
-                { value: "5 лет", label: "гарантия" },
-              ] as const
-            ).map((s) => (
-              <div key={s.label} className="text-white">
-                <div className="text-2xl sm:text-3xl font-bold">{s.value}</div>
-                <div className="text-white/60 text-sm mt-0.5">{s.label}</div>
+            {/* Left: text */}
+            <div>
+              {/* Trust badge */}
+              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+                <span className="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse" />
+                Работаем с 2018 года · Более 500 скважин
               </div>
-            ))}
+
+              {/* Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-5">
+                Артезианские скважины<br />
+                <span className="text-accent">под ключ</span> — за 1 день
+              </h1>
+
+              {/* Subline */}
+              <p className="text-lg sm:text-xl text-white/80 max-w-lg mb-8 leading-relaxed">
+                {company.baseCity}, Раменское и весь юго-восток Подмосковья.
+                Своя техника, сертифицированные трубы, гарантия.
+              </p>
+
+              {/* CTA buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 mb-10">
+                <Link
+                  href="#calculator"
+                  className="inline-flex items-center justify-center gap-2 bg-accent text-white font-bold px-7 py-3.5 rounded-xl hover:bg-accent/90 transition-all shadow-lg text-base"
+                >
+                  Рассчитать стоимость
+                  <ChevronRight className="w-5 h-5" />
+                </Link>
+                <a
+                  href={company.phones[0].href}
+                  className="inline-flex items-center justify-center gap-2 border-2 border-white/50 text-white font-semibold px-7 py-3.5 rounded-xl hover:bg-white/10 hover:border-white/80 transition-all text-base"
+                >
+                  <Phone className="w-4 h-4" />
+                  {company.phones[0].number}
+                </a>
+              </div>
+
+              {/* Stats */}
+              <div className="flex flex-wrap gap-7 sm:gap-10">
+                {(
+                  [
+                    { value: "500+", label: "скважин пробурено" },
+                    { value: "1 день", label: "от звонка до воды" },
+                    { value: "70 км", label: "радиус работ" },
+                    { value: "5 лет", label: "гарантия" },
+                  ] as const
+                ).map((s) => (
+                  <div key={s.label}>
+                    <div className="text-2xl sm:text-3xl font-extrabold">{s.value}</div>
+                    <div className="text-white/55 text-xs sm:text-sm mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: quick form */}
+            <HeroForm />
           </div>
         </div>
       </section>
