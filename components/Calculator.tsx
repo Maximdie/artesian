@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, X } from "lucide-react";
+import { Gift, X, Phone, Send, CheckCircle2 } from "lucide-react";
 import { prices, calcDrillingPrice } from "@/lib/prices";
 
 const MAX_DEPTH = 400;
@@ -14,6 +14,10 @@ export function Calculator() {
   const [depth, setDepth] = useState(40);
   const [isLegal, setIsLegal] = useState(false);
   const [showGift, setShowGift] = useState(false);
+  const [giftPhone, setGiftPhone] = useState("");
+  const [giftLoading, setGiftLoading] = useState(false);
+  const [giftSent, setGiftSent] = useState(false);
+  const [giftError, setGiftError] = useState("");
 
   const result = calcDrillingPrice(depth, isLegal);
   const isFixed = depth <= prices.drilling.fixed.maxDepth;
@@ -127,7 +131,7 @@ export function Calculator() {
       {showGift && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={() => setShowGift(false)}
+          onClick={() => { setShowGift(false); }}
         >
           <div
             className="bg-white rounded-2xl p-7 sm:p-8 max-w-sm w-full shadow-2xl relative"
@@ -141,32 +145,87 @@ export function Calculator() {
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex justify-center gap-3 mb-5">
-              {Array.from({ length: gifts }).map((_, i) => (
-                <div
-                  key={i}
-                  className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center shadow-lg"
-                >
-                  <Gift className="w-8 h-8 text-white" />
+            {giftSent ? (
+              /* Success state */
+              <div className="text-center py-2">
+                <CheckCircle2 className="w-14 h-14 mx-auto mb-4 text-green-500" />
+                <p className="text-xl font-bold text-[#0b4f8a] mb-2">Заявка принята!</p>
+                <p className="text-[#5a6a7e] text-sm leading-relaxed">
+                  Перезвоним в течение 10 минут и расскажем о вашем подарке.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="flex justify-center gap-3 mb-4">
+                  {Array.from({ length: gifts }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-16 h-16 bg-amber-400 rounded-2xl flex items-center justify-center shadow-lg"
+                    >
+                      <Gift className="w-8 h-8 text-white" />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <h3 className="text-xl font-bold text-[#0b4f8a] text-center mb-2">
-              {gifts === 2 ? "Два подарка ждут вас!" : "Подарок ждёт вас!"}
-            </h3>
-            <p className="text-[#5a6a7e] text-sm text-center leading-relaxed mb-6">
-              При бурении {gifts === 2 ? "от 200 м" : "от 100 м"} мы готовим
-              {gifts === 2 ? " два приятных сюрприза" : " приятный сюрприз"} для вас.
-              Оставьте заявку — менеджер расскажет о подарке при звонке.
-            </p>
-            <a
-              href="#zayavka"
-              onClick={() => setShowGift(false)}
-              className="block w-full bg-[#0b4f8a] text-white text-center font-bold py-3.5 rounded-xl hover:bg-[#083a66] transition-colors active:scale-[0.98]"
-            >
-              Оставить заявку →
-            </a>
+                <h3 className="text-xl font-bold text-[#0b4f8a] text-center mb-1">
+                  {gifts === 2 ? "Два подарка ждут вас!" : "Подарок ждёт вас!"}
+                </h3>
+                <p className="text-[#5a6a7e] text-sm text-center leading-relaxed mb-5">
+                  Оставьте номер — перезвоним и расскажем, что приготовили
+                  {gifts === 2 ? " для вас при бурении от 200 м." : " для вас при бурении от 100 м."}
+                </p>
+
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!giftPhone.trim()) return;
+                    setGiftLoading(true);
+                    setGiftError("");
+                    try {
+                      const res = await fetch("/api/lead", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          phone: giftPhone,
+                          message: `🎁 Хочет узнать о подарке (глубина ${depth} м, ${gifts} ${gifts === 1 ? "подарок" : "подарка"})`,
+                        }),
+                      });
+                      if (res.ok) {
+                        setGiftSent(true);
+                      } else {
+                        setGiftError("Ошибка. Позвоните нам напрямую.");
+                      }
+                    } catch {
+                      setGiftError("Ошибка. Позвоните нам напрямую.");
+                    } finally {
+                      setGiftLoading(false);
+                    }
+                  }}
+                  className="flex flex-col gap-3"
+                >
+                  <div className="relative">
+                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+7 (___) ___-__-__"
+                      value={giftPhone}
+                      onChange={(e) => setGiftPhone(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-3 py-3 text-sm text-[#1a2332] focus:outline-none focus:ring-2 focus:ring-[#0b4f8a]/25 focus:border-[#0b4f8a]/50"
+                    />
+                  </div>
+                  {giftError && <p className="text-red-500 text-xs">{giftError}</p>}
+                  <button
+                    type="submit"
+                    disabled={giftLoading}
+                    className="w-full bg-[#0b4f8a] hover:bg-[#083a66] disabled:opacity-60 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
+                  >
+                    <Send className="w-4 h-4" />
+                    {giftLoading ? "Отправляем…" : "Узнать свой подарок"}
+                  </button>
+                </form>
+              </>
+            )}
           </div>
         </div>
       )}
