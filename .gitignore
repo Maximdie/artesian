@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Telegram credentials — создаётся вручную на сервере
+public/tg-config.php
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

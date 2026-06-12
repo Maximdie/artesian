@@ -6,6 +6,7 @@ import { Phone, User, Send, CheckCircle2 } from "lucide-react";
 export function HeroForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot — не трогать
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
@@ -16,12 +17,14 @@ export function HeroForm() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/lead", {
+      const res = await fetch("/send.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, message: "Заявка с главного баннера" }),
+        body: JSON.stringify({ name, phone, website, message: "Заявка с главного баннера" }),
       });
-      if (res.ok) {
+      let data: { ok?: boolean } = {};
+      try { data = await res.json(); } catch { /* ignore parse error */ }
+      if (res.ok && data.ok) {
         setSent(true);
       } else {
         setError("Ошибка отправки. Позвоните нам напрямую.");
@@ -53,6 +56,18 @@ export function HeroForm() {
     >
       <p className="text-white font-bold text-xl mb-1">Получить расчёт</p>
       <p className="text-white/60 text-sm mb-5">Перезвоним за 10 минут · Бесплатно</p>
+
+      {/* honeypot — скрыто от пользователей, но видно ботам */}
+      <input
+        type="text"
+        name="website"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        tabIndex={-1}
+        aria-hidden="true"
+        autoComplete="off"
+        style={{ display: "none" }}
+      />
 
       <div className="flex flex-col gap-3 mb-4">
         <div className="relative">

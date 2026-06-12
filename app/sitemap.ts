@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 const base = "https://artesian-plus.ru";
 
 export default function sitemap(): MetadataRoute.Sitemap {

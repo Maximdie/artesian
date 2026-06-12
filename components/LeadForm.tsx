@@ -10,6 +10,7 @@ export function LeadForm({ title = "Оставить заявку" }: { title?: 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot — не трогать
   const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
 
@@ -19,17 +20,20 @@ export function LeadForm({ title = "Оставить заявку" }: { title?: 
     setStatus("sending");
 
     try {
-      const res = await fetch("/api/lead", {
+      const res = await fetch("/send.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, message }),
+        body: JSON.stringify({ name, phone, message, website }),
       });
 
-      if (res.status === 503) {
+      let data: { ok?: boolean; error?: string } = {};
+      try { data = await res.json(); } catch { /* ignore parse error */ }
+
+      if (!res.ok || data.error === "not_configured") {
         setStatus("no-config");
         return;
       }
-      if (!res.ok) throw new Error();
+      if (!data.ok) throw new Error();
       setStatus("success");
       setName("");
       setPhone("");
@@ -75,6 +79,17 @@ export function LeadForm({ title = "Оставить заявку" }: { title?: 
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
       <h3 className="text-xl font-bold text-[#0b4f8a] mb-6">{title}</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* honeypot — скрыто от пользователей, но видно ботам */}
+        <input
+          type="text"
+          name="website"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          tabIndex={-1}
+          aria-hidden="true"
+          autoComplete="off"
+          style={{ display: "none" }}
+        />
         <div>
           <label htmlFor="lead-name" className="block text-sm font-medium text-[#1a2332] mb-1">
             Имя
