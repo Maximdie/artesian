@@ -1,14 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Load Telegram credentials
-$cfg = __DIR__ . '/tg-config.php';
-if (!file_exists($cfg)) {
-    http_response_code(503);
-    echo json_encode(['ok' => false, 'error' => 'not_configured']);
-    exit;
-}
-require $cfg;
+$to = 'burenie@artesian-plus.ru';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -57,35 +50,32 @@ if (empty($phone)) {
 }
 $phone = substr($phone, 0, 30);
 
-// Build Telegram message
-$text  = "📩 *Новая заявка с сайта artesian-plus.ru*\n";
-$text .= "👤 Имя: " . ($name ?: 'не указано') . "\n";
-$text .= "📞 Телефон: {$phone}";
-if ($message) {
-    $text .= "\n💬 Сообщение: {$message}";
+// Current Moscow time
+$tz   = new DateTimeZone('Europe/Moscow');
+$date = (new DateTime('now', $tz))->format('d.m.Y H:i:s');
+
+// Build email body
+$nameDisplay = $name ?: 'не указано';
+$body  = "Новая заявка с сайта artesian-plus.ru\r\n\r\n";
+$body .= "Имя: {$nameDisplay}\r\n";
+$body .= "Телефон: {$phone}\r\n";
+if ($message !== '') {
+    $body .= "Сообщение: {$message}\r\n";
 }
+$body .= "\r\nДата: {$date} (МСК)";
 
-$payload = json_encode([
-    'chat_id'    => TG_CHAT_ID,
-    'text'       => $text,
-    'parse_mode' => 'Markdown',
-]);
+$subject = '=?UTF-8?B?' . base64_encode('Новая заявка с сайта artesian-plus.ru') . '?=';
 
-$ch = curl_init('https://api.telegram.org/bot' . TG_TOKEN . '/sendMessage');
-curl_setopt_array($ch, [
-    CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $payload,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT        => 10,
-]);
-$resp       = curl_exec($ch);
-$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+$headers  = "From: =?UTF-8?B?" . base64_encode('Сайт Артезианс+') . "?= <burenie@artesian-plus.ru>\r\n";
+$headers .= "Reply-To: burenie@artesian-plus.ru\r\n";
+$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+$headers .= "X-Mailer: PHP";
 
-if ($httpStatus !== 200) {
-    http_response_code(502);
-    echo json_encode(['ok' => false, 'error' => 'telegram_error']);
+$sent = mail($to, $subject, $body, $headers);
+
+if (!$sent) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'mail_failed']);
     exit;
 }
 
